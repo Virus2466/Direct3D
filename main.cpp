@@ -5,8 +5,7 @@
 
 // Function to convert std::string to std::wstring
 std::wstring ConvertToWideString(const std::string& str) {
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    return converter.from_bytes(str);
+    return std::wstring(str.begin(), str.end());
 }
 
 int CALLBACK WinMain(

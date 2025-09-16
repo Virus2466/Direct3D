@@ -1,6 +1,6 @@
 #include "Window.h"
 #include <sstream>
-
+#include "resource.h"
 
 // Window Class 
 Window::WindowClass Window::WindowClass::wndClass;
@@ -16,12 +16,12 @@ Window::WindowClass::WindowClass() noexcept
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = GetInstance();
-	wc.hIcon = nullptr;
+	wc.hIcon = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, 0));
 	wc.hCursor = nullptr;
 	wc.hbrBackground = nullptr;
 	wc.lpszMenuName = nullptr;
 	wc.lpszClassName = GetName();
-	wc.hIconSm = nullptr;
+	wc.hIconSm = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0));;
 
 	RegisterClassEx(&wc);
 
@@ -42,7 +42,7 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 	return wndClass.hInst;
 }
 
-Window::Window(int width, int height, const wchar_t* name) noexcept
+Window::Window(int width, int height, const wchar_t* name)
 	: width(0),height(0)
 {
 	// Calculate Window size based on desired client region size
@@ -55,6 +55,9 @@ Window::Window(int width, int height, const wchar_t* name) noexcept
 	DWORD style = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
 	AdjustWindowRect(&wr, style, FALSE);
+
+	// testing exception here
+	//throw CHWND_EXCEPT(ERROR_ARENA_TRASHED);
 
 	// Create window and get hWnd
 	hWnd = CreateWindow(WindowClass::GetName(),name,
