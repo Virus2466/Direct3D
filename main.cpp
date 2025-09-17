@@ -2,6 +2,7 @@
 #include <codecvt>
 #include <locale>
 #include "Window.h"
+#include<sstream>
 
 // Function to convert std::string to std::wstring
 std::wstring ConvertToWideString(const std::string& str) {
@@ -24,8 +25,16 @@ int CALLBACK WinMain(
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
-            if (wnd.kbd.KeyIsPressed(VK_MENU)) {
-                MessageBox(nullptr, L"Something Happendddd!", L"Space Key was pressed", MB_OK | MB_ICONEXCLAMATION | MB_HELP);
+            while (!wnd.mouse.IsEmpty()) {
+                const auto e = wnd.mouse.Read();
+                if (e.GetType() == Mouse::Event::Type::Move)
+                {
+                    std::wostringstream oss;
+                    oss << L"Mouse Position : (" << e.GetPosX() << "," << e.GetPosY() << L")";
+                    std::wstring title = oss.str();
+                    wnd.SetTitle(title);
+
+                }
             }
         }
 
