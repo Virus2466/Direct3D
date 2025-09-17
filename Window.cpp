@@ -52,7 +52,7 @@ Window::Window(int width, int height, const wchar_t* name)
 	wr.top = 100;
 	wr.bottom = height + wr.top;
 
-	DWORD style = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
+	DWORD style = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_MAXIMIZEBOX;
 
 	AdjustWindowRect(&wr, style, FALSE);
 
@@ -105,13 +105,32 @@ LRESULT WINAPI Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-	switch (msg) 
+	switch (msg)
 	{
 	case WM_CLOSE:
 		PostQuitMessage(0);
 		return 0;
+	case WM_KILLFOCUS:
+		kbd.ClearState();
+		break;
+	/************KEYBOARD MESSAGES***********/
+	case WM_KEYDOWN:
+	// syskey commands need to be handled for ALT key
+	case WM_SYSKEYDOWN:
+		if (!(lParam & 0x40000000 || kbd.AutoRepeatIsEnabled()))
+		{
+			kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
+		}
+		break;
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
+		break;
+	case WM_CHAR:
+		kbd.OnChar(static_cast<unsigned char>(wParam));
+		break;
+	/************KEYBOARD MESSAGES END***********/
 	}
-
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 

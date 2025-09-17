@@ -13,11 +13,10 @@ int CALLBACK WinMain(
     HINSTANCE hPrevInstance,
     LPSTR lpCmdLine,
     int nCmdShow
-) 
+)  
 {
     try {
         Window wnd(800, 300, L"The hell returns");
-        Window wnd2(500, 300, L"The Frost Returns");
 
         MSG msg;
         BOOL gResult;
@@ -25,6 +24,9 @@ int CALLBACK WinMain(
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+            if (wnd.kbd.KeyIsPressed(VK_MENU)) {
+                MessageBox(nullptr, L"Something Happendddd!", L"Space Key was pressed", MB_OK | MB_ICONEXCLAMATION | MB_HELP);
+            }
         }
 
         if (gResult == -1) {
