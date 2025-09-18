@@ -1,7 +1,7 @@
 #include <string>
 #include <codecvt>
 #include <locale>
-#include "Window.h"
+#include "App.h"
 #include<sstream>
 
 // Function to convert std::string to std::wstring
@@ -17,32 +17,7 @@ int CALLBACK WinMain(
 )  
 {
     try {
-        Window wnd(800, 300, L"The hell returns");
-
-        MSG msg;
-        BOOL gResult;
-        while (gResult = GetMessage(&msg, nullptr, 0, 0) > 0)
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-            while (!wnd.mouse.IsEmpty()) {
-                const auto e = wnd.mouse.Read();
-                if (e.GetType() == Mouse::Event::Type::Move)
-                {
-                    std::wostringstream oss;
-                    oss << L"Mouse Position : (" << e.GetPosX() << "," << e.GetPosY() << L")";
-                    std::wstring title = oss.str();
-                    wnd.SetTitle(title);
-
-                }
-            }
-        }
-
-        if (gResult == -1) {
-            return -1;
-        }
-
-        return msg.wParam;
+        App{}.Go();
     }
     catch (const ExpectionClass& e)
     {
